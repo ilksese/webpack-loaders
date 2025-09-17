@@ -1,6 +1,10 @@
 ### 描述
 > 将具名导入的模块拆分为默认导入
 ```js
+// utils/index.js
+export { default as a } from "@/utils/a"
+export { default as b } from "@/utils/b"
+export { default as c } from "@/utils/c"
 // input
 import { a, b, c as d } from "@/utils"
 
@@ -12,6 +16,30 @@ import d from "@/utils/c"
 ### 准备
 ```bash
 pnpm add @babel/parser @babel/traverse @babel/traverse @babel/types -D
+```
+### 使用
+```js
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx|ts|tsx)$/,
+        use: [
+          {
+            loader: "./split-named-import-loader.js",
+            options: {
+              // 配置需要拆分的模块
+              splitImportModel: ["@/utils"],
+            },
+          },
+        ],
+        enforce: "pre",
+        exclude: /node_modules/,
+      },
+    ]
+  }
+}
 ```
 ### 实现
 ```js
